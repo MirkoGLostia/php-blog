@@ -20,11 +20,11 @@ session_start();
 
 <body>
   <div class="container my-5">
-    <h1>Homepage</h1>
+    <h1>Dashboard</h1>
 
-    <p>Pubblica</p>
+    <p>Privata</p>
 
-    <a href="http://localhost/php-blog/login.php" class="btn btn-primary">Login</a>
+    <a href="http://localhost/php-blog" class="btn btn-primary">Logout</a>
   </div>
 </body>
 
