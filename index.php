@@ -4,6 +4,7 @@ session_start();
 // var_dump($_POST['user']);
 // var_dump($_POST['password']);
 
+echo "Favorite animal is " . $_SESSION["verified"] . ".";
 
 
 ?>

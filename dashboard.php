@@ -4,6 +4,12 @@ session_start();
 // var_dump($_POST['user']);
 // var_dump($_POST['password']);
 
+if (!$_SESSION["verified"]) {
+  header("location: error.php");
+  exit;
+}
+
+echo "Favorite animal is " . $_SESSION["verified"] . ".";
 
 
 ?>
@@ -24,7 +30,12 @@ session_start();
 
     <p>Privata</p>
 
-    <a href="http://localhost/php-blog" class="btn btn-primary">Logout</a>
+
+
+    <form action="helper.php" method="post">
+      <input type="hidden" name="logout" value="logout">
+      <button type="submit" class="btn btn-primary">logout</button>
+    </form>
   </div>
 </body>
 

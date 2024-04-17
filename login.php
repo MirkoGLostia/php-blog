@@ -19,7 +19,7 @@ session_start();
   <div style="max-width: 60%; margin: 0 auto;" class="my-5 container">
     <h1 class="text-center">Login</h1>
 
-    <form action="function.php" method="post">
+    <form action="helper.php" method="post">
       <div class=" mb-3">
         <label for="user" class="form-label">User</label>
         <input type="text" class="form-control" id="user" name="user" aria-describedby="emailHelp">
@@ -28,7 +28,7 @@ session_start();
         <label for="password" class="form-label">Password</label>
         <input type="password" class="form-control" id="password" name="password">
       </div>
-      <button submit="saluto()" class="btn btn-primary">Invia</button>
+      <button type="submit" class="btn btn-primary">Invia</button>
     </form>
   </div>
 
