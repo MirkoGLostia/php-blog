@@ -20,3 +20,6 @@ PHP Blog
 
 
 
+### Milestone 2
+- crea form per inserire dati nuovo prodotoo
+- 

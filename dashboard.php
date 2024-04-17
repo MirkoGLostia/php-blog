@@ -1,18 +1,15 @@
 <?php
 session_start();
 
-// var_dump($_POST['user']);
-// var_dump($_POST['password']);
-
 if (!$_SESSION["verified"]) {
   header("location: error.php");
   exit;
 }
 
-echo "Favorite animal is " . $_SESSION["verified"] . ".";
-
 
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">

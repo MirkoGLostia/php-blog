@@ -2,14 +2,15 @@
 session_start();
 include 'connection.php';
 
-class Helper {
+class Helper
+{
 
   public function validation()
   {
 
     $connection = new Database();
     $connection->make_connection();
-    $user = $connection->select_product();
+    $user = $connection->select_data();
 
     $user_db = $user[0]->username;
     $password_db = $user[0]->password;
@@ -32,20 +33,16 @@ class Helper {
 
   public function logout()
   {
-    session_destroy(); 
-    header("location:index.php"); 
+    session_destroy();
+    header("location:index.php");
     exit();
   }
 }
 
 $helper = new Helper();
 
-if(isset($_POST['user']) && isset($_POST['password'])) {
+if (isset($_POST['user']) && isset($_POST['password'])) {
   $helper->validation();
-}elseif(isset($_POST['logout'])) {
+} elseif (isset($_POST['logout'])) {
   $helper->logout();
 }
-
-
-
-

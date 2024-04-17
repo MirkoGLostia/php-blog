@@ -1,13 +1,10 @@
 <?php
-session_start();
-
-// var_dump($_POST['user']);
-// var_dump($_POST['password']);
-
-echo "Favorite animal is " . $_SESSION["verified"] . ".";
 
 
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -25,7 +22,7 @@ echo "Favorite animal is " . $_SESSION["verified"] . ".";
 
     <p>Pubblica</p>
 
-    <a href="http://localhost/php-blog/login.php" class="btn btn-primary">Login</a>
+    <a href="login.php" class="btn btn-primary">Login</a>
   </div>
 </body>
 

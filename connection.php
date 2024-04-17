@@ -26,7 +26,7 @@ class Database
   /*
     Creo una nuova tabella
   */
-  public function make_table()
+  public function create_table()
   {
     $sql = "CREATE TABLE `db_php_blog`.`prodotti` (
       `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -40,14 +40,14 @@ class Database
   /*
     Inserisco dei dati
   */
-  public function add_product()
+  public function insert_data()
   {
     $sql_data = 'INSERT INTO prodotti (nome, prezzo) VALUES ("sapone liquido 100ml", 8.50)';
 
     $this->pdo->exec($sql_data);
   }
 
-  public function select_product()
+  public function select_data()
   {
     $sql = 'SELECT username, password FROM users';
     $sth = $this->pdo->prepare($sql);
