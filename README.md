@@ -22,4 +22,7 @@ PHP Blog
 
 ### Milestone 2
 - crea form per inserire dati nuovo prodotoo
-- 
+- title, text, author
+- utente autenticato tutte le operazioni crud
+
+- utente non autenticato solo lettura 

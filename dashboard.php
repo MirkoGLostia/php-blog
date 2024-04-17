@@ -22,18 +22,21 @@ if (!$_SESSION["verified"]) {
 </head>
 
 <body>
-  <div class="container my-5">
+
+  <header class="container my-5 d-flex justify-content-between ">
     <h1>Dashboard</h1>
-
-    <p>Privata</p>
-
-
 
     <form action="helper.php" method="post">
       <input type="hidden" name="logout" value="logout">
       <button type="submit" class="btn btn-primary">logout</button>
     </form>
-  </div>
+  </header>
+
+  <main class="container my-5">
+
+    <a href="dashboard/create.php">Crea Post</a>
+
+  </main>
 </body>
 
 </html>

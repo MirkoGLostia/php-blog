@@ -40,16 +40,28 @@ class Database
   /*
     Inserisco dei dati
   */
-  public function insert_data()
+  public function insert_data($title, $content, $user_id)
   {
-    $sql_data = 'INSERT INTO prodotti (nome, prezzo) VALUES ("sapone liquido 100ml", 8.50)';
+    $sql = "INSERT INTO posts (title, content, user_id) 
+      VALUES (:title, :content, :user_id)";
 
-    $this->pdo->exec($sql_data);
+    $params = ['title' => $title, 'content' => $content, 'user_id' => $user_id,];
+
+    $sth = $this->pdo->prepare($sql);
+    $result = $sth->execute($params);
+
+    if (!$result) {
+      die('Errore esecuzione query: ' . implode(',', $this->pdo->errorInfo()));
+    }
+
+    // $product = $sth->fetch();
+
+    // return $product;
   }
 
   public function select_data()
   {
-    $sql = 'SELECT username, password FROM users';
+    $sql = 'SELECT * FROM users';
     $sth = $this->pdo->prepare($sql);
     $result = $sth->execute();
 
