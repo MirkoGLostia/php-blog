@@ -9,7 +9,7 @@ class Helper
   {
     $connection = new Database();
     $connection->make_connection();
-    $user = $connection->select_data();
+    $user = $connection->select_user();
 
     $user_db = $user[0]->username;
     $password_db = $user[0]->password;

@@ -1,4 +1,11 @@
 <?php
+include 'connection.php';
+
+$connection = new Database();
+$connection->make_connection();
+$data = $connection->select_data();
+
+var_dump($data);
 
 
 ?>
