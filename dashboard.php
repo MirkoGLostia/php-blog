@@ -1,16 +1,23 @@
 <?php
-session_start();
+include 'utilities/connection.php';
 
+// Controllo della sessione
 if (!$_SESSION["verified"]) {
-  header("location: error.php");
+  header("Location: error.php");
   exit;
 }
 
+// Conessione al database 
+// Salvo in una variabile la lista di post dell'utente autenticato
+$connection = new Crud();
+$connection->make_connection();
+$posts = $connection->index('posts', false);
 
 ?>
 
 
 
+<!-- HTML -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,22 +28,60 @@ if (!$_SESSION["verified"]) {
   <title>PHP Blog</title>
 </head>
 
-<body>
+<body class="pb-5">
 
-  <header class="container my-5 d-flex justify-content-between ">
+  <header class="container my-4 d-flex justify-content-between ">
     <h1>Dashboard</h1>
 
-    <form action="helper.php" method="post">
-      <input type="hidden" name="logout" value="logout">
-      <button type="submit" class="btn btn-primary">logout</button>
-    </form>
+    <div class="d-flex gap-3 align-items-center ">
+      <h4><?= $_SESSION['username'] ?></h4>
+
+      <form action="utilities/helper.php" method="post">
+        <input type="hidden" name="logout" value="logout">
+        <button type="submit" class="btn btn-secondary">Logout</button>
+      </form>
+    </div>
   </header>
 
-  <main class="container my-5">
+  <main class="container my-4 px-5">
 
-    <a href="dashboard/create.php">Crea Post</a>
+    <div class="my-3 py-3 d-flex gap-3 align-items-center ">
+      <h4>I tuoi post</h4>
+
+      <a href="dashboard/form.php" class="btn btn-primary">Crea Post</a>
+    </div>
+
+    <ul class="my-3 list-group">
+      <?php foreach ($posts as $post) : ?>
+
+        <li class="px-3 py-4 list-group-item list-group-item-action">
+
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1"><?= $post->title ?></h5>
+            <small><?= $post->created_at ?></small>
+          </div>
+
+          <p class="mb-3 fw-light"><?= $post->content ?></p>
+
+          <div class="d-flex gap-3 justify-content-end ">
+            <form action="dashboard/form.php" method="post">
+              <input type="hidden" name="update" value="update">
+              <input type="hidden" name="post_id" value="<?= $post->id ?>">
+              <button type="submit" class="btn btn-warning ">Modifica</a>
+            </form>
+            <form action="utilities/helper.php" method="post">
+              <input type="hidden" name="delete" value="delete">
+              <input type="hidden" name="post_id" value="<?= $post->id ?>">
+              <button type="submit" class="btn btn-danger ">Elimina</button>
+            </form>
+          </div>
+        </li>
+
+      <?php endforeach; ?>
+    </ul>
 
   </main>
+
 </body>
 
 </html>

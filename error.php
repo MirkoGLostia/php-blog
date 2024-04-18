@@ -13,19 +13,22 @@
 
   <div style="max-width: 30%; margin: 0 auto;" class="my-5 py-5">
 
-    <h1 class="text-center">Login</h1>
+    <h2 class="mb-3 text-center">Errore 404</h2>
 
-    <form action="utilities/helper.php" method="post">
-      <div class="my-3">
-        <label for="user" class="form-label">User</label>
-        <input type="text" class="form-control" id="user" name="user" aria-describedby="emailHelp">
+    <div class="mb-3 d-flex flex-column align-items-center ">
+      <p>
+        La pagina non esiste o non è possibile accedere senza prima effettuare il login. <br>
+        Puoi tornare alla Homepage o alla pagina di Login cliccando qui sotto:
+      </p>
+
+      <div class="d-flex gap-3">
+        <a href="index.php" class="btn btn-primary px-3">Home</a>
+
+        <a href="login.php" class="btn btn-secondary px-3">Login</a>
       </div>
-      <div class="my-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" name="password">
-      </div>
-      <button type="submit" class="my-3 btn btn-primary">Invia</button>
-    </form>
+
+    </div>
+
   </div>
 
 </body>
