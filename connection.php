@@ -2,7 +2,7 @@
 
 class Database
 {
-  private $pdo;
+  protected $pdo;
 
   /*
     Stabilisco la connessione
@@ -36,41 +36,60 @@ class Database
 
     $this->pdo->exec($sql);
   }
+}
 
+class Crud extends Database
+{
   /*
-    Inserisco dei dati
+    Create: Aggiugno nuovi dati
   */
-  public function insert_data($title, $content, $user_id)
+  public function create($title, $content, $user_id)
   {
     $sql = "INSERT INTO posts (title, content, user_id) 
       VALUES (:title, :content, :user_id)";
 
     $params = ['title' => $title, 'content' => $content, 'user_id' => $user_id,];
 
-    $sth = $this->pdo->prepare($sql);
+    $sth = parent::$pdo->prepare($sql);
+
     $result = $sth->execute($params);
 
     if (!$result) {
-      die('Errore esecuzione query: ' . implode(',', $this->pdo->errorInfo()));
+      die('Errore esecuzione query: ' . implode(',', parent::$pdo->errorInfo()));
     }
-
-    // $product = $sth->fetch();
-
-    // return $product;
   }
 
-  public function select_data()
+  /*
+    Read: Seleziono dei dati da leggere
+  */
+  public function index()
   {
     $sql = 'SELECT * FROM users';
-    $sth = $this->pdo->prepare($sql);
+    $sth = parent::$pdo->prepare($sql);
     $result = $sth->execute();
 
     if (!$result) {
-      die('Errore esecuzione query: ' . implode(',', $this->pdo->errorInfo()));
+      die('Errore esecuzione query: ' . implode(',', parent::$pdo->errorInfo()));
     }
 
     $products = $sth->fetchAll(PDO::FETCH_OBJ);
 
     return $products;
+  }
+
+
+  /*
+    Update: Aggiorno dati esistenti
+  */
+  public function update()
+  {
+  }
+
+
+  /*
+    Update: Aggiorno dati esistenti
+  */
+  public function delete()
+  {
   }
 }

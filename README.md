@@ -6,11 +6,10 @@ PHP Blog
 - back office: crud per i post per utenti autenticati
 
 - title
-- text
+- content
 - author (user session)
 - categories (tag)
 - image
-
 
 ### Milestone 1
 - importare il db
@@ -18,11 +17,8 @@ PHP Blog
 - al login crea una nuova sessione per l'utente
 - try/catch se i dati sono corretti o meno
 
-
-
 ### Milestone 2
 - crea form per inserire dati nuovo prodotoo
 - title, text, author
 - utente autenticato tutte le operazioni crud
-
 - utente non autenticato solo lettura 
