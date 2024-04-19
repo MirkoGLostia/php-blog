@@ -42,7 +42,12 @@ $categories = $connection->index();
 
   <main class="container my-4" style="max-width: 50%;">
 
-    <form action="../utilities/helper.php" method="post">
+    <form action="../utilities/helper.php" method="post" enctype="multipart/form-data">
+
+      <div class="custom-file">
+        <input type="file" class="custom-file-input" name="image">
+        <label class="custom-file-label" for="customFile">Choose file</label>
+      </div>
 
       <div class="mb-3">
         <label for="title" class="form-label">Titolo</label>
