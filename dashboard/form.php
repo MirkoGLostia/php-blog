@@ -11,6 +11,10 @@ $connection = new Crud();
 $connection->make_connection();
 if (isset($_POST['post_id'])) $post = $connection->select($_POST['post_id']);
 
+
+$connection = new Category();
+$connection->make_connection();
+$categories = $connection->index();
 ?>
 
 
@@ -48,6 +52,12 @@ if (isset($_POST['post_id'])) $post = $connection->select($_POST['post_id']);
         <label for="content" class="form-label">Contenuto</label>
         <textarea class="form-control" id="content" name="content" aria-describedby="emailHelp" rows="10"><?= $post['content'] ?? '' ?></textarea>
       </div>
+      <select class="mb-3 form-select" aria-label="Default select example" name="category_id">
+        <option value="">...</option>
+        <?php foreach ($categories as $category) : ?>
+          <option value="<?= $category->id ?>" <?php if (!empty($post)) echo $post['category_id'] === $category->id ? 'selected' : ''; ?>><?= $category->name ?></option>
+        <?php endforeach; ?>
+      </select>
 
       <?php if (empty($post)) : ?>
         <input type="hidden" name="create" value="create">

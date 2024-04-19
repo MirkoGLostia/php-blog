@@ -41,12 +41,12 @@ class Crud extends Database
     }
 
     $statement = $this->connection->prepare($command);
-    $result = $statement->execute();
+    $execution = $statement->execute();
 
-    if (!$result) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
+    if (!$execution) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
 
-    $products = $statement->fetchAll(PDO::FETCH_OBJ);
-    return $products;
+    $result = $statement->fetchAll(PDO::FETCH_OBJ);
+    return $result;
   }
 
   /*
@@ -58,9 +58,9 @@ class Crud extends Database
     $statement = $this->connection->prepare($command);
 
     $params = ['post_id' => $post_id];
-    $result = $statement->execute($params);
+    $execution = $statement->execute($params);
 
-    if (!$result) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
+    if (!$execution) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
 
     $post = $statement->fetch();
     return $post;
@@ -69,15 +69,15 @@ class Crud extends Database
   /*
     Salva un nuovo record nella tabella posts
   */
-  public function store($title, $content, $user_id)
+  public function store($title, $content, $user_id, $category_id)
   {
-    $command = "INSERT INTO `posts` (`title`, `content`, `user_id`) VALUES (:title, :content, :user_id)";
+    $command = "INSERT INTO `posts` (`title`, `content`, `user_id`, `category_id`) VALUES (:title, :content, :user_id, :category_id)";
     $statement = $this->connection->prepare($command);
 
-    $params = ['title' => $title, 'content' => $content, 'user_id' => $user_id];
-    $result = $statement->execute($params);
+    $params = ['title' => $title, 'content' => $content, 'user_id' => $user_id, 'category_id' => $category_id];
+    $execution = $statement->execute($params);
 
-    if (!$result) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
+    if (!$execution) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
   }
 
   /*
@@ -89,9 +89,9 @@ class Crud extends Database
     $statement = $this->connection->prepare($command);
 
     $params = ['title' => $title, 'content' => $content, 'post_id' => $post_id];
-    $result = $statement->execute($params);
+    $execution = $statement->execute($params);
 
-    if (!$result) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
+    if (!$execution) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
   }
 
   /*
@@ -103,11 +103,48 @@ class Crud extends Database
     $statement = $this->connection->prepare($command);
 
     $params = ['post_id' => $post_id];
-    $result = $statement->execute($params);
+    $execution = $statement->execute($params);
 
-    if (!$result) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
+    if (!$execution) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
 
     header("Location: ../dashboard.php");
+    exit();
+  }
+}
+
+class Category extends Database
+{
+  /*
+    Restituisce un oggetto con il name di tutte le categorie
+  */
+  public function index()
+  {
+    $command = "SELECT * FROM `categories`";
+
+    $statement = $this->connection->prepare($command);
+    $execution = $statement->execute();
+
+    if (!$execution) die('Errore esecuzione query');
+
+    $categories = $statement->fetchAll(PDO::FETCH_OBJ);
+    return $categories;
+  }
+
+  /*
+    Salva una nuova categoria
+  */
+  public function store($name)
+  {
+    if (empty($name)) return header("Location: ../dashboard/form_categories.php");
+    $command = "INSERT INTO `categories` (`name`) VALUES (:name)";
+    $params = ['name' => $name];
+
+    $statement = $this->connection->prepare($command);
+    $execution = $statement->execute($params);
+
+    if (!$execution) die('Errore esecuzione query');
+
+    header("Location: ../dashboard/form_categories.php");
     exit();
   }
 }

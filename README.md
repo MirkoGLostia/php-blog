@@ -23,5 +23,10 @@ PHP Blog
 - utente autenticato tutte le operazioni crud
 - utente non autenticato solo lettura 
 
+### Milestone 3
+- metodo per creazione nuova categoria
+- aggiungere una select dentro al form
 
-
+### Milestone 4
+- aggiungi al form campo input per immagine
+- nel form di update sostituire l'immagine se non presente

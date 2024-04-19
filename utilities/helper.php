@@ -45,8 +45,10 @@ class Helper
     $db = new Crud();
     $db->make_connection();
 
+    if (empty($_POST['category_id'])) return header("Location: ../dashboard/form.php");
+
     if (isset($_POST['create'])) {
-      $db->store($_POST['title'], $_POST['content'], $_SESSION['user_id']);
+      $db->store($_POST['title'], $_POST['content'], $_SESSION['user_id'], $_POST['category_id']);
     } elseif (isset($_POST['update'])) {
       $db->update($_POST['title'], $_POST['content'], $_POST['post_id']);
     }
@@ -60,6 +62,9 @@ $helper = new Helper();
 $db = new Crud();
 $db->make_connection();
 
+$categories = new Category();
+$categories->make_connection();
+
 if (isset($_POST['user']) && isset($_POST['password']))
   $helper->login();
 elseif (isset($_POST['logout']))
@@ -68,3 +73,5 @@ elseif (isset($_POST['create']) || isset($_POST['update']))
   $helper->form();
 elseif (isset($_POST['delete']))
   $db->destroy($_POST['post_id']);
+elseif (isset($_POST['categories']))
+  $categories->store(trim($_POST['name']));

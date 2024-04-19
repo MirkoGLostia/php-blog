@@ -49,6 +49,8 @@ $posts = $connection->index('posts', false);
       <h4>I tuoi post</h4>
 
       <a href="dashboard/form.php" class="btn btn-primary">Crea Post</a>
+
+      <a href="dashboard/form_categories.php" class="btn bg-info">Categorie</a>
     </div>
 
     <ul class="my-3 list-group">
@@ -57,11 +59,14 @@ $posts = $connection->index('posts', false);
         <li class="px-3 py-4 list-group-item list-group-item-action">
 
           <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1"><?= $post->title ?></h5>
+            <div class="d-flex gap-3 align-items-center">
+              <h5 class="mb-1"><?= $post->title ?></h5>
+              <span class="badge rounded-pill text-bg-info"><?= $post->category_id ?></span>
+            </div>
             <small><?= $post->created_at ?></small>
           </div>
 
-          <p class="mb-3 fw-light"><?= $post->content ?></p>
+          <p class=" mb-3 fw-light"><?= $post->content ?></p>
 
           <div class="d-flex gap-3 justify-content-end ">
             <form action="dashboard/form.php" method="post">
