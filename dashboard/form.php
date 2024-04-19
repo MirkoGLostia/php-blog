@@ -55,7 +55,7 @@ $categories = $connection->index();
       <select class="mb-3 form-select" aria-label="Default select example" name="category_id">
         <option value="">...</option>
         <?php foreach ($categories as $category) : ?>
-          <option value="<?= $category->id ?>" <?php if (!empty($post)) echo $post['category_id'] === $category->id ? 'selected' : ''; ?>><?= $category->name ?></option>
+          <option value="<?= $category->id ?>" <?php if (!empty($post)) echo $post['category_id'] === $category->id ? 'selected ' : ''; ?>><?= $category->name ?></option>
         <?php endforeach; ?>
       </select>
 

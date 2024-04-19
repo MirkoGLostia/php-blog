@@ -83,12 +83,12 @@ class Crud extends Database
   /*
     Aggiorna un record dalla tabella posts
   */
-  public function update($title, $content, $post_id)
+  public function update($title, $content, $post_id, $category_id)
   {
-    $command = "UPDATE `posts` SET `title` = :title, `content` = :content WHERE `posts`.`id` = :post_id";
+    $command = "UPDATE `posts` SET `title` = :title, `content` = :content, `category_id` = :category_id WHERE `posts`.`id` = :post_id";
     $statement = $this->connection->prepare($command);
 
-    $params = ['title' => $title, 'content' => $content, 'post_id' => $post_id];
+    $params = ['title' => $title, 'content' => $content, 'post_id' => $post_id, 'category_id' => $category_id];
     $execution = $statement->execute($params);
 
     if (!$execution) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));

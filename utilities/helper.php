@@ -50,7 +50,7 @@ class Helper
     if (isset($_POST['create'])) {
       $db->store($_POST['title'], $_POST['content'], $_SESSION['user_id'], $_POST['category_id']);
     } elseif (isset($_POST['update'])) {
-      $db->update($_POST['title'], $_POST['content'], $_POST['post_id']);
+      $db->update($_POST['title'], $_POST['content'], $_POST['post_id'], $_POST['category_id']);
     }
 
     header("Location: ../dashboard.php");
