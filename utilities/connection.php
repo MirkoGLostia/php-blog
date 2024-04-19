@@ -22,6 +22,41 @@ class Database
       die("Impossibile stabilire una connessione al database: " . $e->getMessage());
     }
   }
+
+  public function upload_file()
+  {
+    $currentDirectory = getcwd();
+    $uploadDirectory = "/../storage/";
+
+    $errors = [];
+
+    $fileExtensionsAllowed = ['jpeg','jpg','png'];
+
+    $fileName = $_FILES['image']['name'];
+    $fileTmpName  = $_FILES['image']['tmp_name'];
+    $fileType = $_FILES['image']['type'];
+    $fileExtension = strtolower(end(explode('.',$fileName)));
+
+    $uploadPath = $currentDirectory . $uploadDirectory . basename($fileName); 
+
+    if (! in_array($fileExtension,$fileExtensionsAllowed)) {
+      $errors[] = "This file extension is not allowed. Please upload a JPEG or PNG file";
+    }
+
+    if (empty($errors)) {
+      $didUpload = move_uploaded_file($fileTmpName, $uploadPath);
+
+      if ($didUpload) {
+        echo "The file " . basename($fileName) . " has been uploaded";
+      } else {
+        echo "An error occurred. Please contact the administrator.";
+      }
+    } else {
+      foreach ($errors as $error) {
+        echo $error . "These are the errors" . "\n";
+      }
+    }
+  }
 }
 
 class Crud extends Database
