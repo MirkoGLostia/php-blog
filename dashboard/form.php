@@ -15,6 +15,7 @@ if (isset($_POST['post_id'])) $post = $new_post->select($_POST['post_id']);
 $new_category = new Category();
 $new_category->make_connection();
 $categories = $new_category->index();
+
 ?>
 
 

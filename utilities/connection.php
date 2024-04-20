@@ -28,14 +28,15 @@ class Database
     // Controllo l'estensione del file
     $fileExtensionsAllowed = ['jpeg', 'jpg', 'png'];
 
-    $fileName = $image['name'];
-    $fileNameArr = explode('.', $fileName);
+    $fileNameArr = explode('.', $image['name']);
     $fileExtension = strtolower(end($fileNameArr));
 
     if (!in_array($fileExtension, $fileExtensionsAllowed)) return header("Location: ../dashboard/image.php");
 
     // Elimino la vecchia immagine salvata dello stesso post
     if (!empty($old_image_name) && file_exists("../storage/$old_image_name")) unlink("../storage/$old_image_name");
+
+    $fileName = date('Ymd') . time() . $image['name'];
 
     // Prendo il percorso del file temporaneo e il percorso assoluto dell'immagine dentro la cartella  
     $fileTmpName = $image['tmp_name'];
@@ -96,11 +97,12 @@ class Post extends Database
   public function store($title, $content, $user_id, $category_id, $image)
   {
     $this->upload_file($image, '');
+    $image_name = date('Ymd') . time() . $image['name'];
 
     $command = "INSERT INTO `posts` (`title`, `content`, `user_id`, `category_id`, `image`) VALUES (:title, :content, :user_id, :category_id, :image)";
     $statement = $this->connection->prepare($command);
 
-    $params = ['title' => $title, 'content' => $content, 'user_id' => $user_id, 'category_id' => $category_id, 'image' => $image['name']];
+    $params = ['title' => $title, 'content' => $content, 'user_id' => $user_id, 'category_id' => $category_id, 'image' => $image_name];
     $execution = $statement->execute($params);
 
     if (!$execution) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
@@ -113,11 +115,12 @@ class Post extends Database
   {
     $old = $this->select($post_id);
     $this->upload_file($image, $old['image']);
+    $image_name = date('Ymd') . time() . $image['name'];
 
     $command = "UPDATE `posts` SET `title` = :title, `content` = :content, `category_id` = :category_id, `image` = :image WHERE `posts`.`id` = :post_id";
     $statement = $this->connection->prepare($command);
 
-    $params = ['title' => $title, 'content' => $content, 'post_id' => $post_id, 'category_id' => $category_id, 'image' => $image['name']];
+    $params = ['title' => $title, 'content' => $content, 'post_id' => $post_id, 'category_id' => $category_id, 'image' => $image_name];
     $execution = $statement->execute($params);
 
     if (!$execution) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
@@ -128,6 +131,9 @@ class Post extends Database
   */
   public function destroy($post_id)
   {
+    $old = $this->select($post_id);
+    $old_image = $old['image'];
+
     $command = "DELETE FROM `posts` WHERE `posts`.`id` = :post_id";
     $statement = $this->connection->prepare($command);
 
@@ -135,6 +141,8 @@ class Post extends Database
     $execution = $statement->execute($params);
 
     if (!$execution) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
+
+    if (file_exists("../storage/$old_image")) unlink("../storage/$old_image");
 
     header("Location: ../dashboard.php");
     exit();
