@@ -71,3 +71,5 @@ elseif (isset($_POST['delete']))
   $new_post->destroy($_POST['post_id']);
 elseif (isset($_POST['categories']))
   $new_category->store(trim($_POST['name']));
+elseif (isset($_POST['posts_by_category']))
+  $new_post->posts_by_category();

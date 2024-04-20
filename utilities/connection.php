@@ -147,6 +147,20 @@ class Post extends Database
     header("Location: ../dashboard.php");
     exit();
   }
+
+  public function posts_by_category()
+  {
+    $command = "SELECT * FROM `posts` WHERE `category_id` = :category_id";
+    $statement = $this->connection->prepare($command);
+
+    $params = ['category_id' => 1];
+    $execution = $statement->execute($params);
+
+    if (!$execution) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
+
+    $result = $statement->fetchAll(PDO::FETCH_OBJ);
+    return $result;
+  }
 }
 
 class Category extends Database
@@ -183,5 +197,19 @@ class Category extends Database
 
     header("Location: ../dashboard/form_categories.php");
     exit();
+  }
+
+  public function select_category($category_id)
+  {
+    $command = "SELECT * FROM `categories` WHERE `id` = :id";
+    $params = ['id' => $category_id];
+
+    $statement = $this->connection->prepare($command);
+    $execution = $statement->execute($params);
+
+    if (!$execution) die('Errore esecuzione query');
+
+    $category = $statement->fetch();
+    return $category['name'];
   }
 }

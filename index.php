@@ -7,8 +7,8 @@ $new_post = new Post();
 $new_post->make_connection();
 $posts = $new_post->index('posts', true);
 
-
-
+$new_category = new Category();
+$new_category->make_connection();
 ?>
 
 
@@ -45,6 +45,7 @@ $posts = $new_post->index('posts', true);
             <div class="d-flex align-items-center gap-3">
               <h5 class="mb-1"><?= $post->title ?></h5>
               <span><?= "($post->user_id)" ?></span>
+              <span class="badge rounded-pill text-bg-info"><?= $new_category->select_category($post->category_id) ?></span>
             </div>
             <small><?= $post->created_at ?></small>
           </div>

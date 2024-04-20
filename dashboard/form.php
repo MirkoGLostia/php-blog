@@ -53,9 +53,14 @@ $categories = $new_category->index();
         <label for="content" class="form-label">Contenuto</label>
         <textarea class="form-control" id="content" name="content" aria-describedby="emailHelp" rows="10"><?= $post['content'] ?? '' ?></textarea>
       </div>
-      <div class="mb-3">
-        <label for="image" class="form-label">Immagine <small>(png, jpeg, jpg)</small></label>
-        <input class="form-control" name="image" type="file" id="image">
+      <div class="mb-3 d-flex gap-3">
+        <div class="flex-grow-1">
+          <label for="image" class="form-label">Immagine <small>(png, jpeg, jpg)</small></label>
+          <input class="form-control" name="image" type="file" id="image">
+        </div>
+
+        <img class="" style="height: 100px;" src="../storage/<?= $post['image'] ?? 'placeholder.jpg' ?>">
+
       </div>
       <div class="mb-4">
         <label for="category" class="form-label">Categoria</label>

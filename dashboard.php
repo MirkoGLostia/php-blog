@@ -13,7 +13,10 @@ $new_post = new Post();
 $new_post->make_connection();
 $posts = $new_post->index('posts', false);
 
+$new_category = new Category();
+$new_category->make_connection();
 
+$categories = $new_category->index();
 ?>
 
 
@@ -54,32 +57,49 @@ $posts = $new_post->index('posts', false);
       <a href="dashboard/form_categories.php" class="btn bg-info">Categorie</a>
     </div>
 
+    <ul class=" list-unstyled  d-flex gap-2">
+      <?php foreach ($categories as $category) : ?>
+        <li>
+          <form action="utilities/helper.php" method="post">
+            <input type="hidden" name="posts_by_category">
+            <button type="submit"><span class="badge rounded-pill text-bg-info"><?= $category->name ?></span></button>
+          </form>
+        </li>
+      <?php endforeach; ?>
+    </ul>
+
     <ul class="my-3 list-group">
       <?php foreach ($posts as $post) : ?>
 
-        <li class="px-3 py-4 list-group-item list-group-item-action">
+        <li class="px-3 py-4 list-group-item list-group-item-action d-flex">
 
-          <div class="d-flex w-100 justify-content-between">
-            <div class="d-flex gap-3 align-items-center">
-              <h5 class="mb-1"><?= $post->title ?></h5>
-              <span class="badge rounded-pill text-bg-info"><?= $post->category_id ?></span>
+          <div class="flex-grow-1">
+            <div class="d-flex w-100 justify-content-between">
+              <div class="d-flex gap-3 align-items-center">
+                <h5 class="mb-1"><?= $post->title ?></h5>
+                <span class="badge rounded-pill text-bg-info"><?= $new_category->select_category($post->category_id) ?></span>
+              </div>
+              <small><?= $post->created_at ?></small>
             </div>
-            <small><?= $post->created_at ?></small>
+
+            <p class=" mb-3 fw-light"><?= $post->content ?></p>
+
+            <div class="d-flex gap-3 justify-content-end ">
+              <form action="dashboard/form.php" method="post">
+                <input type="hidden" name="update" value="update">
+                <input type="hidden" name="post_id" value="<?= $post->id ?>">
+                <button type="submit" class="btn btn-warning ">Modifica</a>
+              </form>
+              <form action="utilities/helper.php" method="post">
+                <input type="hidden" name="delete" value="delete">
+                <input type="hidden" name="post_id" value="<?= $post->id ?>">
+                <button type="submit" class="btn btn-danger ">Elimina</button>
+              </form>
+            </div>
           </div>
 
-          <p class=" mb-3 fw-light"><?= $post->content ?></p>
-
-          <div class="d-flex gap-3 justify-content-end ">
-            <form action="dashboard/form.php" method="post">
-              <input type="hidden" name="update" value="update">
-              <input type="hidden" name="post_id" value="<?= $post->id ?>">
-              <button type="submit" class="btn btn-warning ">Modifica</a>
-            </form>
-            <form action="utilities/helper.php" method="post">
-              <input type="hidden" name="delete" value="delete">
-              <input type="hidden" name="post_id" value="<?= $post->id ?>">
-              <button type="submit" class="btn btn-danger ">Elimina</button>
-            </form>
+          <div class="d-flex align-items-center ">
+            <img style="width: 200px;" src="./storage/<?php echo $post->image ?>">
           </div>
         </li>
 
