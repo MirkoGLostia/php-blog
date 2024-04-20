@@ -23,44 +23,32 @@ class Database
     }
   }
 
-  public function upload_file()
+  public function upload_file($image, $old_image_name)
   {
+    // Controllo l'estensione del file
+    $fileExtensionsAllowed = ['jpeg', 'jpg', 'png'];
+
+    $fileName = $image['name'];
+    $fileNameArr = explode('.', $fileName);
+    $fileExtension = strtolower(end($fileNameArr));
+
+    if (!in_array($fileExtension, $fileExtensionsAllowed)) return header("Location: ../dashboard/image.php");
+
+    // Elimino la vecchia immagine salvata dello stesso post
+    if (!empty($old_image_name) && file_exists("../storage/$old_image_name")) unlink("../storage/$old_image_name");
+
+    // Prendo il percorso del file temporaneo e il percorso assoluto dell'immagine dentro la cartella  
+    $fileTmpName = $image['tmp_name'];
     $currentDirectory = getcwd();
-    $uploadDirectory = "/../storage/";
+    $uploadDirectory = "\..\storage\\";
+    $uploadPath = $currentDirectory . $uploadDirectory . basename($fileName);
 
-    $errors = [];
-
-    $fileExtensionsAllowed = ['jpeg','jpg','png'];
-
-    $fileName = $_FILES['image']['name'];
-    $fileTmpName  = $_FILES['image']['tmp_name'];
-    $fileType = $_FILES['image']['type'];
-    $fileExtension = strtolower(end(explode('.',$fileName)));
-
-    $uploadPath = $currentDirectory . $uploadDirectory . basename($fileName); 
-    // $_SESSION['image-upload'] = basename($fileName);
-
-    if (! in_array($fileExtension,$fileExtensionsAllowed)) {
-      $errors[] = "This file extension is not allowed. Please upload a JPEG or PNG file";
-    }
-
-    if (empty($errors)) {
-      $didUpload = move_uploaded_file($fileTmpName, $uploadPath);
-
-      if ($didUpload) {
-        echo "The file " . basename($fileName) . " has been uploaded";
-      } else {
-        echo "An error occurred. Please contact the administrator.";
-      }
-    } else {
-      foreach ($errors as $error) {
-        echo $error . "These are the errors" . "\n";
-      }
-    }
+    // Salvo una nuova immagine
+    move_uploaded_file($fileTmpName, $uploadPath);
   }
 }
 
-class Crud extends Database
+class Post extends Database
 {
   /*
     Restituisce tutti i record di una tabella
@@ -71,9 +59,9 @@ class Crud extends Database
 
     if ($condiction) {
       $user_id = $_SESSION['user_id'];
-      $command = "SELECT * FROM " . $query . " WHERE `posts`.`user_id` = " . $user_id;
+      $command = "SELECT * FROM " . $query . " WHERE `posts`.`user_id` = " . $user_id . " ORDER BY `id` DESC";
     } else {
-      $command = "SELECT * FROM " . $query;
+      $command = "SELECT * FROM " . $query . " ORDER BY `id` DESC";
     }
 
     $statement = $this->connection->prepare($command);
@@ -105,12 +93,14 @@ class Crud extends Database
   /*
     Salva un nuovo record nella tabella posts
   */
-  public function store($title, $content, $user_id, $category_id)
+  public function store($title, $content, $user_id, $category_id, $image)
   {
+    $this->upload_file($image, '');
+
     $command = "INSERT INTO `posts` (`title`, `content`, `user_id`, `category_id`, `image`) VALUES (:title, :content, :user_id, :category_id, :image)";
     $statement = $this->connection->prepare($command);
 
-    $params = ['title' => $title, 'content' => $content, 'user_id' => $user_id, 'category_id' => $category_id, 'image' => basename($fileName)];
+    $params = ['title' => $title, 'content' => $content, 'user_id' => $user_id, 'category_id' => $category_id, 'image' => $image['name']];
     $execution = $statement->execute($params);
 
     if (!$execution) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
@@ -119,12 +109,15 @@ class Crud extends Database
   /*
     Aggiorna un record dalla tabella posts
   */
-  public function update($title, $content, $post_id, $category_id)
+  public function update($title, $content, $post_id, $category_id, $image)
   {
-    $command = "UPDATE `posts` SET `title` = :title, `content` = :content, `category_id` = :category_id WHERE `posts`.`id` = :post_id";
+    $old = $this->select($post_id);
+    $this->upload_file($image, $old['image']);
+
+    $command = "UPDATE `posts` SET `title` = :title, `content` = :content, `category_id` = :category_id, `image` = :image WHERE `posts`.`id` = :post_id";
     $statement = $this->connection->prepare($command);
 
-    $params = ['title' => $title, 'content' => $content, 'post_id' => $post_id, 'category_id' => $category_id];
+    $params = ['title' => $title, 'content' => $content, 'post_id' => $post_id, 'category_id' => $category_id, 'image' => $image['name']];
     $execution = $statement->execute($params);
 
     if (!$execution) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));

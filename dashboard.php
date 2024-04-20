@@ -9,9 +9,9 @@ if (!$_SESSION["verified"]) {
 
 // Conessione al database 
 // Salvo in una variabile la lista di post dell'utente autenticato
-$connection = new Crud();
-$connection->make_connection();
-$posts = $connection->index('posts', false);
+$new_post = new Post();
+$new_post->make_connection();
+$posts = $new_post->index('posts', false);
 
 
 ?>

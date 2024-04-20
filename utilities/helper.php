@@ -3,11 +3,9 @@ include 'connection.php';
 
 class Helper
 {
-  public function login()
+  public function login($new_post)
   {
-    $connection = new Crud();
-    $connection->make_connection();
-    $user = $connection->index('users', true);
+    $user = $new_post->index('users', true);
 
     $user_db = $user[0]->username;
     $password_db = $user[0]->password;
@@ -40,18 +38,14 @@ class Helper
     exit();
   }
 
-  public function form()
+  public function form($new_post)
   {
-    $db = new Crud();
-    $db->make_connection();
-
     if (empty($_POST['category_id'])) return header("Location: ../dashboard/form.php");
 
     if (isset($_POST['create'])) {
-      $db->upload_file();
-      $db->store($_POST['title'], $_POST['content'], $_SESSION['user_id'], $_POST['category_id']);
+      $new_post->store($_POST['title'], $_POST['content'], $_SESSION['user_id'], $_POST['category_id'], $_FILES['image']);
     } elseif (isset($_POST['update'])) {
-      $db->update($_POST['title'], $_POST['content'], $_POST['post_id'], $_POST['category_id']);
+      $new_post->update($_POST['title'], $_POST['content'], $_POST['post_id'], $_POST['category_id'], $_FILES['image']);
     }
 
     header("Location: ../dashboard.php");
@@ -60,19 +54,20 @@ class Helper
 }
 
 $helper = new Helper();
-$db = new Crud();
-$db->make_connection();
 
-$categories = new Category();
-$categories->make_connection();
+$new_post = new Post();
+$new_post->make_connection();
+
+$new_category = new Category();
+$new_category->make_connection();
 
 if (isset($_POST['user']) && isset($_POST['password']))
-  $helper->login();
+  $helper->login($new_post);
 elseif (isset($_POST['logout']))
   $helper->logout();
 elseif (isset($_POST['create']) || isset($_POST['update']))
-  $helper->form();
+  $helper->form($new_post);
 elseif (isset($_POST['delete']))
-  $db->destroy($_POST['post_id']);
+  $new_post->destroy($_POST['post_id']);
 elseif (isset($_POST['categories']))
-  $categories->store(trim($_POST['name']));
+  $new_category->store(trim($_POST['name']));

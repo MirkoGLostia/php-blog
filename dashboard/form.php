@@ -7,14 +7,14 @@ if (!$_SESSION["verified"]) {
   exit;
 }
 
-$connection = new Crud();
-$connection->make_connection();
-if (isset($_POST['post_id'])) $post = $connection->select($_POST['post_id']);
+$new_post = new Post();
+$new_post->make_connection();
+if (isset($_POST['post_id'])) $post = $new_post->select($_POST['post_id']);
 
 
-$connection = new Category();
-$connection->make_connection();
-$categories = $connection->index();
+$new_category = new Category();
+$new_category->make_connection();
+$categories = $new_category->index();
 ?>
 
 
@@ -44,11 +44,6 @@ $categories = $connection->index();
 
     <form action="../utilities/helper.php" method="post" enctype="multipart/form-data">
 
-      <div class="custom-file">
-        <input type="file" class="custom-file-input" name="image" id="image-to-upload">
-        <label class="custom-file-label" for="customFile">Choose file</label>
-      </div>
-
       <div class="mb-3">
         <label for="title" class="form-label">Titolo</label>
         <input type="text" class="form-control" id="title" name="title" aria-describedby="emailHelp" value="<?= $post['title'] ?? '' ?>">
@@ -57,12 +52,19 @@ $categories = $connection->index();
         <label for="content" class="form-label">Contenuto</label>
         <textarea class="form-control" id="content" name="content" aria-describedby="emailHelp" rows="10"><?= $post['content'] ?? '' ?></textarea>
       </div>
-      <select class="mb-3 form-select" aria-label="Default select example" name="category_id">
-        <option value="">...</option>
-        <?php foreach ($categories as $category) : ?>
-          <option value="<?= $category->id ?>" <?php if (!empty($post)) echo $post['category_id'] === $category->id ? 'selected ' : ''; ?>><?= $category->name ?></option>
-        <?php endforeach; ?>
-      </select>
+      <div class="mb-3">
+        <label for="image" class="form-label">Immagine <small>(png, jpeg, jpg)</small></label>
+        <input class="form-control" name="image" type="file" id="image">
+      </div>
+      <div class="mb-4">
+        <label for="category" class="form-label">Categoria</label>
+        <select class="form-select" aria-label="Default select example" id="category" name="category_id">
+          <option value="">...</option>
+          <?php foreach ($categories as $category) : ?>
+            <option value="<?= $category->id ?>" <?php if (!empty($post)) echo $post['category_id'] === $category->id ? 'selected ' : ''; ?>><?= $category->name ?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
 
       <?php if (empty($post)) : ?>
         <input type="hidden" name="create" value="create">

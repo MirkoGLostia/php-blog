@@ -7,9 +7,9 @@ if (!$_SESSION["verified"]) {
   exit;
 }
 
-$connection = new Category();
-$connection->make_connection();
-$categories = $connection->index();
+$new_category = new Category();
+$new_category->make_connection();
+$categories = $new_category->index();
 ?>
 
 

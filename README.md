@@ -30,3 +30,10 @@ PHP Blog
 ### Milestone 4
 - aggiungi al form campo input per immagine
 - nel form di update sostituire l'immagine se non presente
+
+
+
+return header("Location: ../dashboard/form.php");
+vs 
+header("Location: ../dashboard.php");
+exit();

@@ -3,9 +3,11 @@ include 'utilities/connection.php';
 
 // Conessione al database 
 // Salvo in una variabile la lista completa dei post
-$connection = new Crud();
-$connection->make_connection();
-$posts = $connection->index('posts', true);
+$new_post = new Post();
+$new_post->make_connection();
+$posts = $new_post->index('posts', true);
+
+
 
 ?>
 
