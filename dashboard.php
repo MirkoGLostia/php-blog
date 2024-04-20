@@ -13,6 +13,7 @@ $connection = new Crud();
 $connection->make_connection();
 $posts = $connection->index('posts', false);
 
+
 ?>
 
 

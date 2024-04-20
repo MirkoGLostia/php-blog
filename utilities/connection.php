@@ -38,6 +38,7 @@ class Database
     $fileExtension = strtolower(end(explode('.',$fileName)));
 
     $uploadPath = $currentDirectory . $uploadDirectory . basename($fileName); 
+    // $_SESSION['image-upload'] = basename($fileName);
 
     if (! in_array($fileExtension,$fileExtensionsAllowed)) {
       $errors[] = "This file extension is not allowed. Please upload a JPEG or PNG file";
@@ -106,10 +107,10 @@ class Crud extends Database
   */
   public function store($title, $content, $user_id, $category_id)
   {
-    $command = "INSERT INTO `posts` (`title`, `content`, `user_id`, `category_id`) VALUES (:title, :content, :user_id, :category_id)";
+    $command = "INSERT INTO `posts` (`title`, `content`, `user_id`, `category_id`, `image`) VALUES (:title, :content, :user_id, :category_id, :image)";
     $statement = $this->connection->prepare($command);
 
-    $params = ['title' => $title, 'content' => $content, 'user_id' => $user_id, 'category_id' => $category_id];
+    $params = ['title' => $title, 'content' => $content, 'user_id' => $user_id, 'category_id' => $category_id, 'image' => basename($fileName)];
     $execution = $statement->execute($params);
 
     if (!$execution) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
