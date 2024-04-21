@@ -54,24 +54,29 @@ class Post extends Database
   /*
     Restituisce tutti i record di una tabella
   */
-  public function index($query, $public)
+  public function index($user_id, $category_id)
   {
-    $condiction = isset($_SESSION['verified']) && !$public;
-
-    if ($condiction) {
-      $user_id = $_SESSION['user_id'];
-      $command = "SELECT * FROM " . $query . " WHERE `posts`.`user_id` = " . $user_id . " ORDER BY `id` DESC";
-    } else {
-      $command = "SELECT * FROM " . $query . " ORDER BY `id` DESC";
+    if ($user_id == 0 && $category_id == 0) {
+      $command = "SELECT * FROM `posts` ORDER BY `id` DESC";
+      $params = [];
+    } elseif ($user_id == 0 && $category_id != 0) {
+      $command = "SELECT * FROM `posts` WHERE `category_id` = :category_id ORDER BY `id` DESC";
+      $params = ['category_id' => $category_id];
+    } elseif ($user_id != 0 && $category_id == 0) {
+      $command = "SELECT * FROM `posts` WHERE `user_id` = :user_id ORDER BY `id` DESC";
+      $params = ['user_id' => $user_id];
+    } elseif ($user_id != 0 && $category_id != 0) {
+      $command = "SELECT * FROM `posts` WHERE `user_id` = :user_id AND `category_id` = :category_id ORDER BY `id` DESC";
+      $params = ['user_id' => $user_id, 'category_id' => $category_id];
     }
 
     $statement = $this->connection->prepare($command);
-    $execution = $statement->execute();
+    $execution = $statement->execute($params);
 
     if (!$execution) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
 
-    $result = $statement->fetchAll(PDO::FETCH_OBJ);
-    return $result;
+    $posts = $statement->fetchAll(PDO::FETCH_OBJ);
+    return $posts;
   }
 
   /*
@@ -148,17 +153,17 @@ class Post extends Database
     exit();
   }
 
-  public function posts_by_category()
+  public function postsByCategory($category_id)
   {
-    $command = "SELECT * FROM `posts` WHERE `category_id` = :category_id";
-    $statement = $this->connection->prepare($command);
+    $statement = $this->connection->prepare("SELECT * FROM `posts` WHERE `category_id` = :category_id");
 
-    $params = ['category_id' => 1];
+    $params = ['category_id' => $category_id];
     $execution = $statement->execute($params);
 
     if (!$execution) die('Errore esecuzione query: ' . implode(',', $this->connection->errorInfo()));
 
     $result = $statement->fetchAll(PDO::FETCH_OBJ);
+
     return $result;
   }
 }
@@ -211,5 +216,53 @@ class Category extends Database
 
     $category = $statement->fetch();
     return $category['name'];
+  }
+}
+
+class User extends Database
+{
+  public function index()
+  {
+    $statement = $this->connection->prepare("SELECT id, username FROM `users`");
+    $statement->execute();
+
+    $users = $statement->fetchAll(PDO::FETCH_OBJ);
+    return $users;
+  }
+
+  public function store($username, $password)
+  {
+    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+    $statement = $this->connection->prepare("INSERT INTO `users` (`username`, `password`) VALUE (:username, :password)");
+
+    $params = ['username' => $username, 'password' => $passwordHash];
+    $execution = $statement->execute($params);
+
+    if (!$execution) die('Errore esecuzione query');
+
+    header("Location: ../login.php");
+    exit;
+  }
+
+  public function getAll($username)
+  {
+    $statement = $this->connection->prepare("SELECT * FROM `users` WHERE `username` = :username");
+
+    $params = ['username' => $username];
+    $statement->execute($params);
+
+    $user = $statement->fetch(PDO::FETCH_OBJ);
+    return $user;
+  }
+
+  public function getUsername($id)
+  {
+    $statement = $this->connection->prepare("SELECT `username` FROM `users` WHERE `id` = :id");
+
+    $params = ['id' => $id];
+    $statement->execute($params);
+
+    $user = $statement->fetch(PDO::FETCH_OBJ);
+    return $user;
   }
 }

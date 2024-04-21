@@ -13,16 +13,16 @@
 
   <div style="max-width: 30%; margin: 0 auto;" class="my-5 py-5">
 
-    <h1 class="text-center">Login</h1>
+    <h1 class="text-center">Crea un nuovo acoount</h1>
 
-    <form action="utilities/helper.php" method="post">
+    <form action="../utilities/helper.php" method="post">
       <div class="my-3">
-        <label for="username" class="form-label">Username</label>
-        <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp">
+        <label for="user_s" class="form-label">User</label>
+        <input type="text" class="form-control" id="user_s" name="user_s" aria-describedby="emailHelp">
       </div>
       <div class="my-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" name="password">
+        <label for="password_s" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password_s" name="password_s">
       </div>
       <button type="submit" class="my-3 btn btn-primary">Invia</button>
     </form>

@@ -3,26 +3,26 @@ include 'connection.php';
 
 class Helper
 {
-  public function login($new_post)
+  public function login($new_user, $username, $password)
   {
-    $user = $new_post->index('users', true);
+    $user = $new_user->getAll($username);
 
-    $user_db = $user[0]->username;
-    $password_db = $user[0]->password;
-    $id_db = $user[0]->id;
+    if (!$user) {
+      header("Location: ../login.php");
+      exit;
+    }
 
-    $user = $_POST['user'];
-    $password = $_POST['password'];
+    $username_db = $user->username;
+    $password_db = $user->password;
+    $id_db = $user->id;
 
     // Validazione
     $valid_password = password_verify($password, $password_db);
-    $valid_user = false;
-    if ($user_db === $user) $valid_user = true;
 
-    if ($valid_user && $valid_password) {
+    if ($valid_password) {
       $_SESSION["verified"] = true;
       $_SESSION["user_id"] = $id_db;
-      $_SESSION['username'] = $user_db;
+      $_SESSION["username"] = $username_db;
       header("Location: ../dashboard.php");
       exit;
     } else {
@@ -61,8 +61,11 @@ $new_post->make_connection();
 $new_category = new Category();
 $new_category->make_connection();
 
-if (isset($_POST['user']) && isset($_POST['password']))
-  $helper->login($new_post);
+$new_user = new User();
+$new_user->make_connection();
+
+if (isset($_POST['username']) && isset($_POST['password']))
+  var_dump($helper->login($new_user, $_POST['username'], $_POST['password']));
 elseif (isset($_POST['logout']))
   $helper->logout();
 elseif (isset($_POST['create']) || isset($_POST['update']))
@@ -71,5 +74,10 @@ elseif (isset($_POST['delete']))
   $new_post->destroy($_POST['post_id']);
 elseif (isset($_POST['categories']))
   $new_category->store(trim($_POST['name']));
-elseif (isset($_POST['posts_by_category']))
-  $new_post->posts_by_category();
+elseif (isset($_POST['user_s']) && isset($_POST['password_s']))
+  $new_user->store($_POST['user_s'], $_POST['password_s']);
+elseif (isset($_POST['postsByCategory'])) {
+  $_SESSION['category_id'] = $_POST['postsByCategory'];
+  if (!$_SESSION['verified']) header("Location: ../index.php");
+  else header("Location: ../dashboard.php");
+}

@@ -1,6 +1,6 @@
 <?php
 include 'utilities/connection.php';
-
+$category_id;
 // Controllo della sessione
 if (!$_SESSION["verified"]) {
   header("Location: error.php");
@@ -11,7 +11,7 @@ if (!$_SESSION["verified"]) {
 // Salvo in una variabile la lista di post dell'utente autenticato
 $new_post = new Post();
 $new_post->make_connection();
-$posts = $new_post->index('posts', false);
+$posts = $new_post->index($_SESSION['user_id'], $_SESSION['category_id']);
 
 $new_category = new Category();
 $new_category->make_connection();
@@ -49,31 +49,43 @@ $categories = $new_category->index();
 
   <main class="container my-4 px-5">
 
-    <div class="my-3 py-3 d-flex gap-3 align-items-center ">
-      <h4>I tuoi post</h4>
+    <div class="my-3 py-3 d-flex gap-3 align-items-center justify-content-between ">
+      <?php if ($_SESSION['category_id'] != 0) : ?>
+        <h4 class="my-3 py-3">Tutti i Post in <span class=" text-info "><?= $new_category->select_category($_SESSION['category_id']) ?></span></h4>
+      <?php else : ?>
+        <h4 class="my-3 py-3">Tutti i Post</span></h4>
+      <?php endif; ?>
 
-      <a href="dashboard/form.php" class="btn btn-primary">Crea Post</a>
+      <div class="d-flex gap-3">
+        <a href="dashboard/form.php" class="btn btn-primary">Crea Post</a>
+        <a href="dashboard/form_categories.php" class="btn bg-info-subtle">Categorie</a>
+      </div>
 
-      <a href="dashboard/form_categories.php" class="btn bg-info">Categorie</a>
     </div>
 
-    <ul class=" list-unstyled  d-flex gap-2">
+    <ul class=" list-unstyled  d-flex gap-2 align-items-center ">
+      <li>
+        <form action="utilities/helper.php" method="post">
+          <input type="hidden" name="postsByCategory" value="0">
+          <button type="submit" class="badge rounded-pill text-bg-info border-0 px-4 py-3">All</button>
+        </form>
+      </li>
       <?php foreach ($categories as $category) : ?>
         <li>
           <form action="utilities/helper.php" method="post">
-            <input type="hidden" name="posts_by_category">
-            <button type="submit"><span class="badge rounded-pill text-bg-info"><?= $category->name ?></span></button>
+            <input type="hidden" name="postsByCategory" value="<?= $category->id ?>">
+            <button type="submit" class="badge rounded-pill text-bg-info border-0 px-3 py-2"><?= $category->name ?></button>
           </form>
         </li>
       <?php endforeach; ?>
     </ul>
 
-    <ul class="my-3 list-group">
-      <?php foreach ($posts as $post) : ?>
+    <?php if ($posts) : ?>
+      <ul class="my-3 list-group">
+        <?php foreach ($posts as $post) : ?>
 
-        <li class="px-3 py-4 list-group-item list-group-item-action d-flex">
+          <li class="px-3 py-4 list-group-item list-group-item-action">
 
-          <div class="flex-grow-1">
             <div class="d-flex w-100 justify-content-between">
               <div class="d-flex gap-3 align-items-center">
                 <h5 class="mb-1"><?= $post->title ?></h5>
@@ -82,7 +94,12 @@ $categories = $new_category->index();
               <small><?= $post->created_at ?></small>
             </div>
 
-            <p class=" mb-3 fw-light"><?= $post->content ?></p>
+            <div class="d-flex my-3" style="gap: 30px">
+              <div style="width: 200px; height: fit-content" class="rounded rounded-4 overflow-hidden ">
+                <img style="width: 100%;" src="./storage/<?php echo $post->image ?>">
+              </div>
+              <p style="width: calc(100% - 230px);" class="fw-light"><?= $post->content ?></p>
+            </div>
 
             <div class="d-flex gap-3 justify-content-end ">
               <form action="dashboard/form.php" method="post">
@@ -96,15 +113,14 @@ $categories = $new_category->index();
                 <button type="submit" class="btn btn-danger ">Elimina</button>
               </form>
             </div>
-          </div>
 
-          <div class="d-flex align-items-center ">
-            <img style="width: 200px;" src="./storage/<?php echo $post->image ?>">
-          </div>
-        </li>
+          </li>
 
-      <?php endforeach; ?>
-    </ul>
+        <?php endforeach; ?>
+      </ul>
+    <?php else : ?>
+      <p class="my-3">Non ci sono Post</p>
+    <?php endif; ?>
 
   </main>
 
