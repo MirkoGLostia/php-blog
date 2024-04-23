@@ -1,15 +1,15 @@
 <?php
-include '../utilities/connection.php';
-
-// Controllo della sessione
+session_start();
 if (!$_SESSION["verified"]) {
   header("Location: ../error.php");
   exit;
 }
 
-$new_category = new Category();
-$new_category->make_connection();
-$categories = $new_category->index();
+require_once('../Models/Category.php');
+
+if (isset($_POST['category_name'])) $categoryObj->store(trim($_POST['category_name']));
+$categories = $categoryObj->index();
+
 ?>
 
 
@@ -30,7 +30,7 @@ $categories = $new_category->index();
   <header class="container my-4 d-flex justify-content-between align-items-center  " style="max-width: 30%;">
     <h2 class="text-center">Categorie</h2>
 
-    <a href="http://localhost/php-blog/dashboard.php" class="btn btn-secondary">Dashboard</a>
+    <a href="http://localhost/php-blog/Admin/index.php" class="btn btn-secondary">Dashboard</a>
   </header>
 
   <main class="container my-4" style="max-width: 30%;">
@@ -41,17 +41,12 @@ $categories = $new_category->index();
       <?php endforeach; ?>
     </ul>
 
-    <form action="../utilities/helper.php" method="post">
-
+    <form action="formCategories.php" method="post">
       <div class="mb-3">
-        <label for="name" class="form-label">Aggiungi Categoria</label>
-        <input type="text" class="form-control" id="name" name="name">
+        <label for="category_name" class="form-label">Aggiungi Categoria</label>
+        <input type="text" class="form-control" id="category_name" name="category_name">
       </div>
-
-      <input type="hidden" name="categories" value="categories">
-
       <button type="submit" class="btn btn-primary px-3">Invio</button>
-
     </form>
 
   </main>

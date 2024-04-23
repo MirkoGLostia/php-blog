@@ -15,7 +15,7 @@
 
     <h1 class="text-center">Login</h1>
 
-    <form action="utilities/helper.php" method="post">
+    <form action="../Models/Controller.php" method="post">
       <div class="my-3">
         <label for="username" class="form-label">Username</label>
         <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp">
@@ -24,6 +24,7 @@
         <label for="password" class="form-label">Password</label>
         <input type="password" class="form-control" id="password" name="password">
       </div>
+      <input type="hidden" name="login">
       <button type="submit" class="my-3 btn btn-primary">Invia</button>
     </form>
   </div>

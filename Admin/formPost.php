@@ -1,20 +1,15 @@
 <?php
-include '../utilities/connection.php';
-
-// Controllo della sessione
+session_start();
 if (!$_SESSION["verified"]) {
   header("Location: ../error.php");
   exit;
 }
 
-$new_post = new Post();
-$new_post->make_connection();
-if (isset($_POST['post_id'])) $post = $new_post->select($_POST['post_id']);
+require_once('../Models/Post.php');
+require_once('../Models/Category.php');
 
-
-$new_category = new Category();
-$new_category->make_connection();
-$categories = $new_category->index();
+$post = isset($_GET['edit']) ? $postObj->show($_GET['edit']) : FALSE;
+$categories = $categoryObj->index();
 
 ?>
 
@@ -34,49 +29,51 @@ $categories = $new_category->index();
 <body class="pb-5">
 
   <header class="container my-4">
-    <?php if (empty($post)) : ?>
+    <?php if (!$post) : ?>
       <h2 class="text-center">Crea un nuovo Post</h2>
     <?php else : ?>
-      <h2 class="text-center">Modifica il Post: <?= $post['title'] ?></h2>
+      <h2 class="text-center">Modifica il post: <?= $post->title ?></h2>
     <?php endif ?>
   </header>
 
   <main class="container my-4" style="max-width: 50%;">
 
-    <form action="../utilities/helper.php" method="post" enctype="multipart/form-data">
+    <form action="../Models/Controller.php" method="post" enctype="multipart/form-data">
 
       <div class="mb-3">
         <label for="title" class="form-label">Titolo</label>
-        <input type="text" class="form-control" id="title" name="title" aria-describedby="emailHelp" value="<?= $post['title'] ?? '' ?>">
+        <input type="text" class="form-control" id="title" name="title" aria-describedby="emailHelp" value="<?= $post->title ?? '' ?>">
       </div>
+
       <div class="mb-3">
         <label for="content" class="form-label">Contenuto</label>
-        <textarea class="form-control" id="content" name="content" aria-describedby="emailHelp" rows="10"><?= $post['content'] ?? '' ?></textarea>
+        <textarea class="form-control" id="content" name="content" aria-describedby="emailHelp" rows="10"><?= $post->content ?? '' ?></textarea>
       </div>
+
       <div class="mb-3 d-flex gap-3">
         <div class="flex-grow-1">
           <label for="image" class="form-label">Immagine <small>(png, jpeg, jpg)</small></label>
           <input class="form-control" name="image" type="file" id="image">
         </div>
-
-        <img class="" style="height: 100px;" src="../storage/<?= $post['image'] ?? 'placeholder.jpg' ?>">
-
+        <div class="rounded rounded-4 overflow-hidden ">
+          <img class="object-fit-cover" style="height: 100px; width: 170px;" src="../storage/placeholder.jpg">
+        </div>
       </div>
+
       <div class="mb-4">
         <label for="category" class="form-label">Categoria</label>
-        <select class="form-select" aria-label="Default select example" id="category" name="category_id">
+        <select class="form-select" aria-label="Default select example" id="category" name="category">
           <option value="">...</option>
           <?php foreach ($categories as $category) : ?>
-            <option value="<?= $category->id ?>" <?php if (!empty($post)) echo $post['category_id'] === $category->id ? 'selected ' : ''; ?>><?= $category->name ?></option>
+            <option value="<?= $category->id ?>" <?php if ($post) echo $category->id == $post->category_id ? 'selected ' : '' ?>><?= $category->name ?></option>
           <?php endforeach; ?>
         </select>
       </div>
 
-      <?php if (empty($post)) : ?>
-        <input type="hidden" name="create" value="create">
+      <?php if ($post) : ?>
+        <input type="hidden" name="update" value="<?= $post->id ?>">
       <?php else : ?>
-        <input type="hidden" name="update" value="update">
-        <input type="hidden" name="post_id" value="<?php echo $_POST['post_id'] ?>">
+        <input type="hidden" name="store" value="">
       <?php endif ?>
 
       <button type="submit" class="btn btn-primary px-3">Invio</button>

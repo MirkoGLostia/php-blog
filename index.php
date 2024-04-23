@@ -1,21 +1,13 @@
 <?php
-include 'utilities/connection.php';
+require_once('Models/User.php');
+require_once('Models/Category.php');
+require_once('Models/Post.php');
 
-if (!isset($_SESSION['category_id'])) $_SESSION['category_id'] = 0;
+$category = $_GET['category'] ?? 'all';
 
-$new_post = new Post();
-$new_post->make_connection();
-$posts = $new_post->index(0, $_SESSION['category_id']);
-
-$new_category = new Category();
-$new_category->make_connection();
-$categories = $new_category->index();
-
-$new_user = new User();
-$new_user->make_connection();
-
+$posts = $postObj->index(0, $category);
+$categories = $categoryObj->index();
 ?>
-
 
 
 <!-- HTML -->
@@ -35,30 +27,32 @@ $new_user->make_connection();
     <h1>Homepage</h1>
 
     <div>
-      <a href="dashboard/registration.php" class="btn btn-secondary">Sign up</a>
-      <a href="login.php" class="btn btn-primary">Login</a>
+      <a href="Auth/signup.php" class="btn btn-secondary">Sign up</a>
+      <a href="Auth/login.php" class="btn btn-primary">Login</a>
     </div>
   </header>
 
   <main class="container my-4 px-5">
 
-    <?php if ($_SESSION['category_id'] != 0) : ?>
-      <h4 class="my-3 py-3">Tutti i Post in <span class=" text-info "><?= $new_category->select_category($_SESSION['category_id']) ?></span></h4>
-    <?php else : ?>
-      <h4 class="my-3 py-3">Tutti i Post</span></h4>
-    <?php endif; ?>
+    <div>
+      <?php if ($category != 'all') : ?>
+        <h4 class="my-3 py-3">Tutti i Post in <span class="text-info "><?= $categoryObj->show($category)->name ?></span></h4>
+      <?php else : ?>
+        <h4 class="my-3 py-3">Tutti i Post</span></h4>
+      <?php endif; ?>
+    </div>
 
     <ul class="list-unstyled d-flex gap-2 align-items-center ">
       <li>
-        <form action="utilities/helper.php" method="post">
-          <input type="hidden" name="postsByCategory" value="0">
+        <form action="index.php" method="get">
+          <input type="hidden" name="category" value="all">
           <button type="submit" class="badge rounded-pill text-bg-info border-0 px-4 py-3">All</button>
         </form>
       </li>
       <?php foreach ($categories as $category) : ?>
         <li>
-          <form action="utilities/helper.php" method="post">
-            <input type="hidden" name="postsByCategory" value="<?= $category->id ?>">
+          <form action="index.php" method="get">
+            <input type="hidden" name="category" value="<?= $category->name ?>">
             <button type="submit" class="badge rounded-pill text-bg-info border-0 px-3 py-2"><?= $category->name ?></button>
           </form>
         </li>
@@ -74,20 +68,21 @@ $new_user->make_connection();
             <div class="d-flex w-100 justify-content-between">
               <div class="d-flex align-items-center gap-3">
                 <h5 class="mb-1"><?= $post->title ?></h5>
-                <span class="badge rounded-pill text-bg-info"><?= $new_category->select_category($post->category_id) ?></span>
-                <small class=" text-capitalize ">(<?= $new_user->getUsername($post->user_id)->username ?>)</small>
+                <span class="badge rounded-pill text-bg-info"><?= $post->name ?></span>
+                <small class="text-capitalize ">(<?= $post->username ?>)</small>
               </div>
-              <small><?= $post->created_at ?></small>
+              <small><?= $post->updated_at ?></small>
             </div>
 
             <div class="d-flex mt-3" style="gap: 30px">
               <div style="width: 200px; height: fit-content" class="rounded rounded-4 overflow-hidden ">
-                <img style="width: 100%;" src="./storage/<?php echo $post->image ?>">
+                <img style="width: 100%;" src="./storage/<?= $post->image ?>">
               </div>
               <p style="width: calc(100% - 230px);" class="fw-light m-0"><?= $post->content ?></p>
             </div>
 
           </li>
+
         <?php endforeach; ?>
       </ul>
 
