@@ -24,7 +24,7 @@
       <div class="d-flex gap-3">
         <a href="index.php" class="btn btn-primary px-3">Home</a>
 
-        <a href="login.php" class="btn btn-secondary px-3">Login</a>
+        <a href="Auth/login.php" class="btn btn-secondary px-3">Login</a>
       </div>
 
     </div>
